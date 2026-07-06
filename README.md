@@ -1,8 +1,9 @@
+# !!!! 절때로 함부로 실행하지마세요 !!!!
+
 # C2-test
 
-랜섬웨어 실습을 위한 테스트 레파지토리입니다.
-C2 테스트 입니다!
-!!!! 절때로 함부로 실행하지마세요 !!!!
+본 레파지토리는 훈련용 랜섬웨어 레파지토리입니다.
+실제 소스 코드 형상관리겸 C2 페이로드 드롭퍼 및 키 수신 채널로 사용됩니다.
 
 This repository is strictly for educational and testing purposes regarding ransomware simulations (C2 Testing).
 ⚠️ WARNING: DO NOT execute any files unless you fully understand the risks.
@@ -28,10 +29,19 @@ This repository is strictly for educational and testing purposes regarding ranso
     └── sample.webp         - 샘플 이미지
 ```
 
+# 테스트 고 코드 실행
+
+````bash
+# 암호화 테스트
+go run ./go/encrypt.go
+# 복호화 테스트
+go run ./go/decryption.go
+```
 # 빌드 방법
 
 ```bash
-cd ./go
-go mod init c2-test-go
-GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o core.exe main.go
-```
+# 윈도우 기준 빌드
+GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o .build/encrypt.exe ./go/encrypt.go
+# 복호화 윈도우 기준 빌드
+GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o .build/decryption.exe ./go/decryption.go
+````

@@ -22,6 +22,9 @@ This repository is strictly for educational and testing purposes regarding ranso
 ├── key                 - 암호화 키 파일
 │   ├── private.pem         - 개인키(실제로 해커가 이걸 올려둘리는 없죠)
 │   └── public.pem          - 공개키(암호화용 키에요)
+├── macro               - 매크로 파일(실행하지마세요!)
+│   ├── [케이스1](가상기업)_월차_신청서_양식.xlsm   - 로컬에 이미 있는 경우(디펜더로 막지못함)
+│   └── [케이스2](가상기업)_월차_신청서_양식.xlsm   - 로컬에 없고 페이로드로 다운로드 하는경우(디펜더로 막힘)
 └── target              - 암호화 대상
     ├── sample.db           - 샘플 디비파일
     ├── sample.mov          - 샘플 영상

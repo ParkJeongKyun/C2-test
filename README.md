@@ -14,18 +14,18 @@ This repository is strictly for educational and testing purposes regarding ranso
 ├── build               - 빌드 결과 디렉토리(실행하시면 안됩니다! 테스트용 악성코드에요)
 │   └── core.exe
 ├── go                  - 원본 파일
-│   ├── decryption.go
-│   ├── encrypt.go
+│   ├── decryption.go       - 복호화 원본 소스코드
+│   ├── encrypt.go          - 암호화 원본 소스코드
 │   └── go.mod
 ├── key                 - 암호화 키 파일
-│   ├── private.pem     - 개인키(실제로 해커가 이걸 올려둘리는 없죠)
-│   └── public.pem      - 공개키(암호화용 키에요)
+│   ├── private.pem         - 개인키(실제로 해커가 이걸 올려둘리는 없죠)
+│   └── public.pem          - 공개키(암호화용 키에요)
 └── target              - 암호화 대상
-    ├── sample.db       - 샘플 디비파일
-    ├── sample.mov      - 샘플 영상
-    ├── sample.ogg      - 샘플 오디오
-    ├── sample.txt      - 샘플 문서
-    └── sample.webp     - 샘플 이미지
+    ├── sample.db           - 샘플 디비파일
+    ├── sample.mov          - 샘플 영상
+    ├── sample.ogg          - 샘플 오디오
+    ├── sample.txt          - 샘플 문서
+    └── sample.webp         - 샘플 이미지
 ```
 
 # 빌드 방법

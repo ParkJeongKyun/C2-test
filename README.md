@@ -13,7 +13,8 @@ This repository is strictly for educational and testing purposes regarding ranso
 ```bash
 ├── README.md           - 설명 파일
 ├── build               - 빌드 결과 디렉토리(실행하시면 안됩니다! 테스트용 악성코드에요)
-│   └── core.exe
+│   └── decryption.exe      - 윈도우 기준 복호화 실행파일
+│   └── encrypt.exe         - 윈도우 기준 암호화 실행파일
 ├── go                  - 원본 파일
 │   ├── decryption.go       - 복호화 원본 소스코드
 │   ├── encrypt.go          - 암호화 원본 소스코드
@@ -41,7 +42,7 @@ go run ./go/decryption.go
 
 ```bash
 # 윈도우 기준 빌드
-GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o .build/encrypt.exe ./go/encrypt.go
+GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o ./build/encrypt.exe ./go/encrypt.go
 # 복호화 윈도우 기준 빌드
-GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o .build/decryption.exe ./go/decryption.go
+GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o ./build/decryption.exe ./go/decryption.go
 ````

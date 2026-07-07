@@ -79,4 +79,6 @@ GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o ./build/encrypt.exe ./go/
 GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o ./build/decryption.exe ./go/decryption.go
 # 다운로드 윈도우 기준 빌드
 GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o ./build/downloader.exe ./go/downloader.go
+# base64 인코딩
+base64 -i encrypt.exe -o encoded_encrypt.txt
 ```

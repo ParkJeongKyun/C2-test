@@ -8,6 +8,8 @@
 This repository is strictly for educational and testing purposes regarding ransomware simulations (C2 Testing).
 ⚠️ WARNING: DO NOT execute any files unless you fully understand the risks.
 
+<img width="1458" height="982" alt="image" src="https://github.com/user-attachments/assets/4cf202e7-3b92-4d77-ab06-6d5eb7c3fe8d" />
+
 # 디렉토리 구조
 
 ```bash

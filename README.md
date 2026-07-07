@@ -37,12 +37,13 @@ This repository is strictly for educational and testing purposes regarding ranso
 
 # 테스트 고 코드 실행
 
-````bash
+```bash
 # 암호화 테스트
 go run ./go/encrypt.go
 # 복호화 테스트
 go run ./go/decryption.go
 ```
+
 # 빌드 방법
 
 ```bash
@@ -50,4 +51,4 @@ go run ./go/decryption.go
 GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o ./build/encrypt.exe ./go/encrypt.go
 # 복호화 윈도우 기준 빌드
 GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o ./build/decryption.exe ./go/decryption.go
-````
+```

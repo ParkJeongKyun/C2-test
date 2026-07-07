@@ -35,6 +35,19 @@ This repository is strictly for educational and testing purposes regarding ranso
     └── sample.webp         - 샘플 이미지
 ```
 
+# 실행방법
+```bash
+# macro를 사용하는 경우
+최상위 디렉토리로 엑셀 파일을 옮기시고 실행해야합니다!
+(target 폴더와 같은 Depth)
+케이스1의 경우 실행파일이 이미 같은 댑스에 존재하는 경우입니다
+케이스2의 경우 실행파일을 실제로 다운로드 하는 경우입니다. 이는 윈도우 디펜더에 막히기 때문에 디펜더를 비활성화 하고 실행하셔야합니다
+!!! 실제로 디펜더를 끄는 행위는 위험하므로 하지 마세요 !!!
+# exe를 직접 실행하는 경우
+마찬가지로 최상위 디렉토리로 실행파일을 옮겨둔 상태로 실행해야합니다.
+(target 폴더와 같은 Depth)
+```
+
 # 테스트 고 코드 실행
 
 ```bash

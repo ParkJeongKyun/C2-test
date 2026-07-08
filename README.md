@@ -14,50 +14,54 @@ This repository is strictly for educational and testing purposes regarding ranso
 # 디렉토리 구조
 
 ```bash
-├── README.md           - 설명 파일
-├── build               - 빌드 결과 디렉토리(실행하시면 안됩니다! 테스트용 악성코드에요)
-│   ├── decryption.exe      - 윈도우 기준 복호화 실행파일
-│   ├── encrypt.exe         - 윈도우 기준 암호화 실행파일
-│   └── downloader.exe      - 윈도우 기준 다운로더 실행파일
-├── go                  - 원본 파일
-│   ├── decryption.go       - 복호화 원본 소스코드
-│   ├── encrypt.go          - 암호화 원본 소스코드
-│   ├── downloader.go       - 다운로더 원본 소스코드
+├── RANSOMNOTE_SAMPLE.txt           # 랜섬노트 샘플(실제로 사용하지 않습니다)
+├── README.md                       # 설명
+├── build                           # 빌드된 파일
+│   ├── attack.hta                      # mshta.exe로 실행할 마크다운 파일(VBA가 삽입되어 있음)
+│   ├── decryption.exe                  # 복호화용 프로그램(윈도우용)
+│   ├── encoded_attack.txt              # attack.hta를 Base64로 인코딩한 파일
+│   ├── encoded_encrypt.txt             # encrypt.exe를 Base64로 인코딩한 파일
+│   └── encrypt.exe                     # [실제랜섬웨어기능]암호화용 프로그램(윈도우용)
+├── go                              # 원본 소스코드
+│   ├── decryption.go                   # 복호화용 원본 소스코드
+│   ├── encrypt.go                      # 암호화용 원본 소스코드
 │   └── go.mod
-├── key                 - 암호화 키 파일
-│   ├── private.pem         - 개인키(실제로 해커가 이걸 올려둘리는 없죠)
-│   └── public.pem          - 공개키(암호화용 키에요)
-├── macro               - 매크로 파일(실행하지마세요!)
-│   ├── [케이스1](가상기업)_월차_신청서_양식.xlsm   - 로컬에 이미 있는 경우(디펜더로 막지못함)
-│   └── [케이스2](가상기업)_월차_신청서_양식.xlsm   - 로컬에 없고 페이로드로 다운로드 하는경우(디펜더로 막힘)
-└── target              - 암호화 대상
-    ├── sample.db           - 샘플 디비파일
-    ├── sample.mov          - 샘플 영상
-    ├── sample.ogg          - 샘플 오디오
-    ├── sample.txt          - 샘플 문서
-    └── sample.webp         - 샘플 이미지
+├── key                             # 암/복호화에 사용할 RSA키
+│   ├── private.pem                     # 개인키(복호화용)
+│   └── public.pem                      # 공개키(암호화용)
+├── macro                           # VBA가 삽입된 엑셀파일
+│   └── [최종][실행X](가상기업)_월차_신청서_양식.xlsm
+└── target                          # 샘플용 테스트 타켓 폴더(암호화 대상)
+    ├── sample.db                       # 샘플 DB
+    ├── sample.mov                      # 샘플 영상
+    ├── sample.ogg                      # 샘플 오디오
+    ├── sample.txt                      # 샘플 문서
+    └── sample.webp                     # 샘플 이미지
 ```
 
 # 조건
 
 ```bash
 안전을 위해서 다음과 같은 조건이 적용되어 있습니다.
-1. 1Depth 상위 디렉토리까지만 검사
-2. 'target'이라는 이름의 폴더만 검사
-3. 특정 확장자 별로만 검사
+1. 1Depth 상위 디렉토리까지만 검사함.
+2. 'target'이라는 이름의 폴더만 선택함.
+3. 그 폴더 내 특정 확장자 별로만 암호화 수행함.
 ```
 
 # 실행방법
 
 ```bash
-# macro를 사용하는 경우
-(target 폴더와 같은 Depth)
-케이스1의 경우 실행파일이 이미 같은 댑스에 존재하는 경우입니다
-케이스2의 경우 실행파일을 실제로 다운로드 하는 경우입니다. 이는 윈도우 디펜더에 막히기 때문에 디펜더를 비활성화 하고 실행하셔야합니다
-!!! 실제로 디펜더를 끄는 행위는 위험하므로 하지 마세요 !!!
-# exe를 직접 실행하는 경우
-(target 폴더와 1댑스 차이까지는 암호화 수행)
+1. 엑셀 파일 매크로를 통해서 실행하는 방법
+    1-1. 안티바이러스를 종료한다.(책임은 지지 않습니다!!!)
+    1-2. 엑셀 파일을 좌클릭하여 매크로 실행을 허용한다.
+    1-3. 엑셀 파일을 실행하여 매크로 실행을 허용한다.
+2. hta를 mshta.exe로 실행하는 방법
+    2-1. CMD에서 mshta.exe "%cd%\build\attack.hta"
+    2-2. 파워셀에서 mshta.exe "$PWD\build\attack.hta"
+3. 실행파일을 직접 실행하여 실행하는 방법
 ```
+
+#
 
 # 테스트 고 코드 실행
 
@@ -70,15 +74,13 @@ go run ./go/decryption.go
 
 # 빌드 방법
 
-실제로 빌드시에는 난독화가 필요하겠지만 훈련용이기 때문에 사용하지 않습니다.
-
 ```bash
+# 실제로 빌드시에는 난독화가 필요하겠지만 훈련용이기 때문에 사용하지 않습니다.
 # 윈도우 기준 빌드
 GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o ./build/encrypt.exe ./go/encrypt.go
 # 복호화 윈도우 기준 빌드
 GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o ./build/decryption.exe ./go/decryption.go
-# 다운로드 윈도우 기준 빌드
-GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o ./build/downloader.exe ./go/downloader.go
 # base64 인코딩
 base64 -i encrypt.exe -o encoded_encrypt.txt
+base64 -i attack.hta -o encoded_attack.txt
 ```

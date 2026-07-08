@@ -9,7 +9,7 @@
 
 This repository is strictly for educational and testing purposes regarding ransomware simulations (C2 Testing).
 
-<img width="1458" height="982" alt="image" src="https://github.com/user-attachments/assets/4cf202e7-3b92-4d77-ab06-6d5eb7c3fe8d" />
+<img width="736" height="519" alt="image" src="https://github.com/user-attachments/assets/7575ed1c-b7c1-445a-884d-d74d3fff5ff4" />
 
 # 디렉토리 구조
 

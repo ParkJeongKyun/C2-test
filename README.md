@@ -11,7 +11,7 @@
 
 ## 흐름도
 
-<img width="736" height="519" alt="image" src="https://github.com/user-attachments/assets/7575ed1c-b7c1-445a-884d-d74d3fff5ff4" />
+<img width="746" height="524" alt="image" src="https://github.com/user-attachments/assets/c31ed998-1783-47dc-877d-bd7a488af86b" />
 
 ## 디렉토리 구조
 
@@ -33,12 +33,15 @@
 │   └── public.pem                      # 공개키(암호화용)
 ├── macro                           # VBA가 삽입된 엑셀파일
 │   └── [최종][실행X](가상기업)_월차_신청서_양식.xlsm
-└── target                          # 샘플용 테스트 타켓 폴더(암호화 대상)
-    ├── sample.db                       # 샘플 DB
-    ├── sample.mov                      # 샘플 영상
-    ├── sample.ogg                      # 샘플 오디오
-    ├── sample.txt                      # 샘플 문서
-    └── sample.webp                     # 샘플 이미지
+├── target                          # 샘플용 테스트 타켓 폴더(암호화 대상)
+│   ├── sample.db                       # 샘플 DB
+│   ├── sample.mov                      # 샘플 영상
+│   ├── sample.ogg                      # 샘플 오디오
+│   ├── sample.txt                      # 샘플 문서
+│   └── sample.webp                     # 샘플 이미지
+└── vba                             # VBA 스크립트 원본
+    ├── attack.bas                      # hta에 삽입되어 있는 스크립트 원본
+    └── macro.bas                       # 엑셀 파일내에 매크로로 삽입되어 있는 스크립트 원본
 ```
 
 # 실행/빌드 플랫폼 환경
@@ -75,6 +78,28 @@
 3. 실행파일을 직접 실행하여 실행하는 방법
     3-1. build 디렉토리에 있는 encrypt.exe를 직접 실행한다.
 ```
+
+# 엑셀 매크로 실행 방법
+1. 안티 바이러스 사용시 자동 차단되기 때문에 비활성화 해주세요 (비활성화로 인한 피해는 책임지지 않습니다!, 사진은 HP wolf security)
+<img width="150" height="100" alt="image" src="https://github.com/user-attachments/assets/0dff30ba-f60d-46a3-b39c-1d4ad014a0dd" />
+<img width="150" height="100" alt="image" src="https://github.com/user-attachments/assets/73ad4a23-64df-4c21-8b33-be368839fbcb" />
+
+3. 매크로가 포함된 엑셀을 실행하여 편집을 사용(순서중요!)
+<img width="200" height="50" alt="image" src="https://github.com/user-attachments/assets/2704a547-7838-41fb-8344-900fd93595a2" />
+
+4. 파일 속성에서 보안 차단 해제
+<img width="100" height="150" alt="image" src="https://github.com/user-attachments/assets/6c949b39-b1cc-4b4a-baa0-761bacf33903" />
+<img width="400" height="100" alt="image" src="https://github.com/user-attachments/assets/653f131a-d457-4acd-9c70-3f4d0bea905a" />
+
+5. 엑셀에서 컨텐츠 매크로를 허용하여 직접실행
+<img width="300" height="50" alt="image" src="https://github.com/user-attachments/assets/b5c5d9b0-6bc5-4f88-bcef-21d3faacf53f" />
+
+
+## 아래와 같이 윈도우 디펜더에서 차단될수도 있습니다!
+<img width="200" height="250" alt="image" src="https://github.com/user-attachments/assets/6cf12c84-149b-4131-960f-969e47c0f547" />
+<img width="200" height="100" alt="image" src="https://github.com/user-attachments/assets/46fe4a4b-0d08-431f-ade2-c2a84cea1533" />
+<img width="300" height="250" alt="image" src="https://github.com/user-attachments/assets/cbf00d9c-78c7-4980-9aae-25ee49896760" />
+
 
 # Go 코드 직접 실행
 
